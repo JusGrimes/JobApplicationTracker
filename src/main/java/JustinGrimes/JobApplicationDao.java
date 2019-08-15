@@ -4,17 +4,17 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JobAppplicationDao implements Dao<JobApplication> {
+public class JobApplicationDao implements Dao<JobApplication> {
     private final static String dbFile = "applications.db";
     private final static String defaultDbUrl = "jdbc:sqlite:" + dbFile;
     private final String dbUrl;
 
 
-    public JobAppplicationDao() throws SQLException {
+    public JobApplicationDao() throws SQLException {
         this(defaultDbUrl);
     }
 
-    public JobAppplicationDao(String url) throws SQLException {
+    public JobApplicationDao(String url) throws SQLException {
         dbUrl = url;
         setupDB();
 

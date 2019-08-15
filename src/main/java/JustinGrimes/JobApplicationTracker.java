@@ -3,7 +3,6 @@ package JustinGrimes;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class JobApplicationTracker extends JFrame {
@@ -18,7 +17,7 @@ public class JobApplicationTracker extends JFrame {
         try {
             this.setMinimumSize(new Dimension(600, 300));
             initComponents();
-            jobAppDao = new JobAppplicationDao();
+            jobAppDao = new JobApplicationDao();
         }
         catch(SQLException e){
             e.printStackTrace();
