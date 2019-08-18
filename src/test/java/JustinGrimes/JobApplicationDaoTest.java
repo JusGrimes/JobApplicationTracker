@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,21 +13,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class JobApplicationDaoTest {
     private JobApplication testJobApplication;
     private Dao<JobApplication> jobAppDao;
-    private String dbURL = "jdbc:sqlite:test.db";
     private Connection testConn;
-    private LocalDate testDate;
 
     void emptyDB() throws SQLException {
+        //noinspection SqlWithoutWhere
         String sql =
                 "DELETE FROM job_applications;";
         Statement statement = testConn.createStatement();
         statement.execute(sql);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public JobApplicationDaoTest() throws SQLException {
+        String dbURL = "jdbc:sqlite:src/test/resources/test.db";
         jobAppDao = new JobApplicationDao(dbURL);
         testConn = DriverManager.getConnection(dbURL);
-        testDate = LocalDate.now();
+        LocalDate testDate = LocalDate.now();
         testJobApplication = new JobApplication(
                 "Awesome New Co",
                 testDate,
@@ -168,7 +168,6 @@ class JobApplicationDaoTest {
         jobAppDao.add(testJobApplication);
         String sql = "SELECT * FROM job_applications " +
                 "WHERE company_name LIKE ?;";
-        String getSQL = "SELECT * FROM job_applications WHERE id = ?;";
 
         JobApplication secondJobApp = new JobApplication("Second Best Company:",
                 LocalDate.of(1985,7,3),

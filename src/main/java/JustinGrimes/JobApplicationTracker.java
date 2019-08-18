@@ -15,7 +15,7 @@ public class JobApplicationTracker extends JFrame {
     public JobApplicationTracker() throws HeadlessException {
         super(appName);
         try {
-            this.setMinimumSize(new Dimension(600, 300));
+            this.setMinimumSize(new Dimension(1000, 500));
             initComponents();
             jobAppDao = new JobApplicationDao();
         }

@@ -5,10 +5,10 @@ import java.util.Objects;
 
 public class JobApplication {
     private int id;
-    private String companyName;
-    private LocalDate applicationDate;
-    private JobStatus status;
-    private String notes;
+    private final String companyName;
+    private final LocalDate applicationDate;
+    private final JobStatus status;
+    private final String notes;
 
     public JobApplication(String companyName, LocalDate applicationDate, JobStatus status, String notes) {
         this.companyName = companyName;
@@ -55,5 +55,16 @@ public class JobApplication {
     @Override
     public int hashCode() {
         return Objects.hash(companyName, applicationDate, status, notes);
+    }
+
+    @Override
+    public String toString() {
+        return "JobApplication{" +
+                "id=" + id +
+                ", companyName='" + companyName + '\'' +
+                ", applicationDate=" + applicationDate +
+                ", status=" + status +
+                ", notes='" + notes + '\'' +
+                '}';
     }
 }

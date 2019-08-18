@@ -1,8 +1,6 @@
 package JustinGrimes;
 
-import java.util.HashMap;
-import java.util.Map;
-
+@SuppressWarnings("unused")
 public enum JobStatus {
     APPLIED,
     REJECTED,
