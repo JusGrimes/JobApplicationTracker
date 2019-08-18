@@ -80,3 +80,10 @@ fabric.properties
 
 #ignore target dir
 target/
+
+# DB file
+*.db
+
+/src/test/resources/test.db
+/JustinGrimes/TableSelectionDemo.java
+
