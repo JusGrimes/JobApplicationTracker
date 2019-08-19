@@ -19,6 +19,7 @@ public class JobApplicationTracker extends JFrame {
     private JPanel headerPanel;
     private JPanel buttonPanel;
     private Dao<JobApplication> applicationDao;
+    private AppTableModel appTableModel;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(JobApplicationTracker::new
@@ -28,19 +29,30 @@ public class JobApplicationTracker extends JFrame {
     public JobApplicationTracker() {
         super("Job Application Tracker");
         this.setContentPane(this.rootPanel);
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
+
         addButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                Frame frame;
+                AddDialog dialog = new AddDialog(JobApplicationTracker.this);
+                dialog.setVisible(true);
+                JobApplication newApp = dialog.getValue();
+                if (newApp != null) {
+                    applicationDao.add(newApp);
+                    appTableModel.setApplications(applicationDao.getAll());
+                }
             }
         });
+        setLocationRelativeTo(null);
     }
 
     private void createUIComponents() {
-        AppTableModel appTableModel = null;
+
         try {
             applicationDao = new JobApplicationDao();
             appTableModel = new AppTableModel(applicationDao.getAll());

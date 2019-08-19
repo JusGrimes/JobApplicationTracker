@@ -1,15 +1,16 @@
 package JustinGrimes;
 
-import org.jdatepicker.JDatePicker;
-import org.jdatepicker.impl.DateComponentFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
-import org.jdatepicker.util.JDatePickerUtil;
 
 import javax.swing.*;
-import javax.swing.text.DateFormatter;
+import java.awt.*;
 import java.awt.event.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Properties;
 
 public class AddDialog extends JDialog {
@@ -18,13 +19,27 @@ public class AddDialog extends JDialog {
     private JButton buttonCancel;
     private JPanel inputPanel;
     private JTextField companyNameInput;
-    private JTextField textField3;
-    private JTextPane textPane1;
-    private JDatePickerImpl JDatePickerImpl1;
-    private JDatePanelImpl JDatePanelImpl1;
+    private JTextField statusInput;
+    private JTextPane notesInput;
+    private JDatePickerImpl dateInput;
+    private JLabel notesLabel;
+    private JLabel statusLabel;
+    private JLabel dateLabel;
+    private JLabel companyNameLabel;
+
+    private JobApplication addedJobApp = null;
 
     public AddDialog() {
-        createUIComponents();
+        setUp();
+    }
+
+
+    public AddDialog(Frame owner) {
+        super(owner);
+        setUp();
+    }
+
+    private void setUp(){
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -46,6 +61,12 @@ public class AddDialog extends JDialog {
                 KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,
                         0),
                 JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        Dimension size = new Dimension(300, 270);
+        setResizable(false);
+        setSize(size);
+        setTitle("Add Application");
+        setLocationRelativeTo(getOwner());
+
     }
 
     private void createUIComponents() {
@@ -53,13 +74,31 @@ public class AddDialog extends JDialog {
         p.put("text.today", "Today");
         p.put("text.month", "Month");
         p.put("text.year", "Year");
-        JDatePickerImpl1 = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), p), new DateLabelFormatter());
+        dateInput = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), p), new DateLabelFormatter());
+        notesInput = new JTextPane();
 
+        // sets notes border to default of the current look and feel
+        notesInput.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
     }
 
+    public JobApplication getValue() {
+        return addedJobApp;
+    }
 
     private void onOK() {
         // add your code here
+        try{
+            addedJobApp = new JobApplication(
+                    companyNameInput.getText(),
+                    LocalDate.parse(dateInput.getJFormattedTextField().getText()),
+                    JobStatus.valueOf(statusInput.getText()),
+                    notesInput.getText()
+            );
+        } catch (DateTimeParseException e) {
+            System.out.println("invalid Date");
+        } catch (IllegalArgumentException e){
+            System.out.println("Invalid data");
+        }
         dispose();
     }
 
