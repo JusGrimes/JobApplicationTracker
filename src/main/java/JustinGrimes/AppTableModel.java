@@ -7,7 +7,7 @@ import java.util.Map;
 public class AppTableModel extends AbstractTableModel {
 
     private final String[] columnNames = {"Company Name", "Application Date", "Status", "Notes"};
-    private final List<JobApplication> applications;
+    private List<JobApplication> applications;
 
     private final Map<Integer, fieldMapping> colIdToFieldMap = Map.of(
             0, fieldMapping.COMPANY_NAME,
@@ -62,5 +62,10 @@ public class AppTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         return colIndexToField(applications.get(rowIndex), columnIndex);
+    }
+
+    public void setApplications(List<JobApplication> applications) {
+        this.applications = applications;
+        this.fireTableDataChanged();
     }
 }

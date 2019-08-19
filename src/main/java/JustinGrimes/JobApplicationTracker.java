@@ -3,6 +3,9 @@ package JustinGrimes;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 
 @SuppressWarnings("WeakerAccess")
@@ -18,9 +21,7 @@ public class JobApplicationTracker extends JFrame {
     private Dao<JobApplication> applicationDao;
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(()->{
-                    new JobApplicationTracker();
-                }
+        SwingUtilities.invokeLater(JobApplicationTracker::new
         );
     }
 
@@ -30,6 +31,12 @@ public class JobApplicationTracker extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
+        addButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+            }
+        });
     }
 
     private void createUIComponents() {
