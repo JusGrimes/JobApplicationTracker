@@ -7,45 +7,58 @@ import org.jdatepicker.impl.UtilDateModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.Properties;
 
-public class AddDialog extends JDialog {
+public class EditApplicationForm extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
     private JPanel inputPanel;
     private JTextField companyNameInput;
-    private JTextField statusInput;
     private JTextPane notesInput;
     private JDatePickerImpl dateInput;
     private JLabel notesLabel;
     private JLabel statusLabel;
     private JLabel dateLabel;
     private JLabel companyNameLabel;
+    private JComboBox<JobStatus> statusComboBox;
+    private JobApplication currentApplication = null;
 
-    private JobApplication addedJobApp = null;
-
-    public AddDialog() {
+    public EditApplicationForm() {
         setUp();
     }
 
 
-    public AddDialog(Frame owner) {
+    public EditApplicationForm(Frame owner) {
         super(owner);
         setUp();
     }
+
+    public EditApplicationForm(Frame owner, JobApplication application) {
+        super(owner);
+        setUp();
+        currentApplication = application;
+    }
+
 
     private void setUp(){
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        buttonOK.addActionListener(e -> onOK());
+        Dimension size = new Dimension(300, 270);
+        setResizable(false);
+        setSize(size);
+        setTitle("Add Application");
+        setLocationRelativeTo(getOwner());
 
+
+        buttonOK.addActionListener(e -> onOK());
         buttonCancel.addActionListener(e -> onCancel());
 
         // call onCancel() when cross is clicked
@@ -61,11 +74,15 @@ public class AddDialog extends JDialog {
                 KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,
                         0),
                 JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        Dimension size = new Dimension(300, 270);
-        setResizable(false);
-        setSize(size);
-        setTitle("Add Application");
-        setLocationRelativeTo(getOwner());
+
+        // prefill will current records info
+        if (currentApplication != null) {
+            companyNameInput.setText(currentApplication.getCompanyName());
+            LocalDate appDate = currentApplication.getApplicationDate();
+            dateInput.getModel().setDate(appDate.getYear(), appDate.getMonthValue(), appDate.getDayOfMonth());
+            statusComboBox.setSelectedItem(currentApplication.getStatus());
+            notesInput.setText(currentApplication.getNotes());
+        }
 
     }
 
@@ -74,31 +91,39 @@ public class AddDialog extends JDialog {
         p.put("text.today", "Today");
         p.put("text.month", "Month");
         p.put("text.year", "Year");
-        dateInput = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), p), new DateLabelFormatter());
+
+
+
+        UtilDateModel dateModel = new UtilDateModel();
+        dateInput = new JDatePickerImpl(new JDatePanelImpl(dateModel, p), new DateLabelFormatter());
+        dateModel.setValue(Date.from(Instant.now()));
+
         notesInput = new JTextPane();
 
         // sets notes border to default of the current look and feel
         notesInput.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
+
+        statusComboBox = new JComboBox<>(JobStatus.values());
     }
 
     public JobApplication getValue() {
-        return addedJobApp;
+        return currentApplication;
     }
 
     private void onOK() {
         // add your code here
-        try{
-            addedJobApp = new JobApplication(
+        try {
+            currentApplication = new JobApplication(
                     companyNameInput.getText(),
                     LocalDate.parse(dateInput.getJFormattedTextField().getText()),
-                    JobStatus.valueOf(statusInput.getText()),
+                    (JobStatus) statusComboBox.getSelectedItem(),
                     notesInput.getText()
             );
-        } catch (DateTimeParseException e) {
+        } catch (DateTimeParseException | IllegalArgumentException e) {
+            e.printStackTrace();
             System.out.println("invalid Date");
-        } catch (IllegalArgumentException e){
-            System.out.println("Invalid data");
         }
+
         dispose();
     }
 
@@ -108,7 +133,7 @@ public class AddDialog extends JDialog {
     }
 
     public static void main(String[] args) {
-        AddDialog dialog = new AddDialog();
+        EditApplicationForm dialog = new EditApplicationForm();
         dialog.setTitle("Add Application");
         dialog.pack();
         dialog.setVisible(true);

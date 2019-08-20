@@ -3,7 +3,6 @@ package JustinGrimes;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -39,7 +38,7 @@ public class JobApplicationTracker extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 Frame frame;
-                AddDialog dialog = new AddDialog(JobApplicationTracker.this);
+                EditApplicationForm dialog = new EditApplicationForm(JobApplicationTracker.this);
                 dialog.setVisible(true);
                 JobApplication newApp = dialog.getValue();
                 if (newApp != null) {
