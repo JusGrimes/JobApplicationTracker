@@ -2,7 +2,6 @@ package JustinGrimes;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -29,6 +28,7 @@ public class JobApplicationTracker extends JFrame {
         super("Job Application Tracker");
         this.setContentPane(this.rootPanel);
 
+        this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
@@ -37,7 +37,6 @@ public class JobApplicationTracker extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                Frame frame;
                 EditApplicationForm dialog = new EditApplicationForm(JobApplicationTracker.this);
                 dialog.setVisible(true);
                 JobApplication newApp = dialog.getValue();
@@ -47,7 +46,42 @@ public class JobApplicationTracker extends JFrame {
                 }
             }
         });
-        setLocationRelativeTo(null);
+
+
+        deleteButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                final int selectedRow = applicationTable.getSelectedRow();
+
+                // prevent against OOB exception for no rows selected
+                if (selectedRow == -1) return;
+
+                JobApplication selectedApp = appTableModel.getApplicationAtRow(selectedRow);
+                applicationDao.delete(selectedApp.getId());
+                appTableModel.setApplications(applicationDao.getAll());
+            }
+        });
+
+        editButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                final int selectedRow = applicationTable.getSelectedRow();
+
+                // prevent against OOB exception for no rows selected
+                if (selectedRow == -1) return;
+
+                JobApplication selectedApp = appTableModel.getApplicationAtRow(selectedRow);
+
+                EditApplicationForm dialog = new EditApplicationForm(JobApplicationTracker.this, selectedApp);
+                dialog.setVisible(true);
+
+                applicationDao.update(selectedApp.getId(), dialog.getValue());
+                appTableModel.setApplications(applicationDao.getAll());
+
+            }
+        });
     }
 
     private void createUIComponents() {

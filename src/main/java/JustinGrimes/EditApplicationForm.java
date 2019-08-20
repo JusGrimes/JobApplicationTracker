@@ -9,7 +9,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Properties;
@@ -41,8 +40,8 @@ public class EditApplicationForm extends JDialog {
 
     public EditApplicationForm(Frame owner, JobApplication application) {
         super(owner);
-        setUp();
         currentApplication = application;
+        setUp();
     }
 
 
@@ -50,11 +49,9 @@ public class EditApplicationForm extends JDialog {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-
-        Dimension size = new Dimension(300, 270);
+        Dimension size = new Dimension(350, 270);
         setResizable(false);
         setSize(size);
-        setTitle("Add Application");
         setLocationRelativeTo(getOwner());
 
 
@@ -113,12 +110,17 @@ public class EditApplicationForm extends JDialog {
     private void onOK() {
         // add your code here
         try {
+            int currentId = -1;
+            if (currentApplication != null) {
+                currentId = currentApplication.getId();
+            }
             currentApplication = new JobApplication(
-                    companyNameInput.getText(),
-                    LocalDate.parse(dateInput.getJFormattedTextField().getText()),
-                    (JobStatus) statusComboBox.getSelectedItem(),
-                    notesInput.getText()
-            );
+                        companyNameInput.getText(),
+                        LocalDate.parse(dateInput.getJFormattedTextField().getText()),
+                        (JobStatus) statusComboBox.getSelectedItem(),
+                        notesInput.getText()
+                );
+            currentApplication.setId(currentId);
         } catch (DateTimeParseException | IllegalArgumentException e) {
             e.printStackTrace();
             System.out.println("invalid Date");
@@ -134,7 +136,6 @@ public class EditApplicationForm extends JDialog {
 
     public static void main(String[] args) {
         EditApplicationForm dialog = new EditApplicationForm();
-        dialog.setTitle("Add Application");
         dialog.pack();
         dialog.setVisible(true);
         System.exit(0);

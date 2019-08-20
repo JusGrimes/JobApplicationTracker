@@ -64,6 +64,10 @@ public class AppTableModel extends AbstractTableModel {
         return colIndexToField(applications.get(rowIndex), columnIndex);
     }
 
+    public JobApplication getApplicationAtRow(int row) {
+        return applications.get(row);
+    }
+
     public void setApplications(List<JobApplication> applications) {
         this.applications = applications;
         this.fireTableDataChanged();
