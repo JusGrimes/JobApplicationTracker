@@ -85,5 +85,5 @@ target/
 *.db
 
 /src/test/resources/test.db
-/JustinGrimes/TableSelectionDemo.java
 
+/applications.db
